@@ -24,11 +24,20 @@ function fileOverride( defaultPath, modifiedPath ) {
                 var appFile = new gutil.File(
                     {
                         base: appFileLoc.base,
-                        cwd: appFileLoc.cwd,
+                        cwd: originalFile.cwd,
                         path: appFileLoc.path,
                         contents: new Buffer( fs.readFileSync( appFileLoc.path ) )
                     }
                 );
+
+                // var file = appFile.clone({contents: false});
+                // var parsedPath = parsePath(file.relative);
+                // path = Path.join(parsedPath.dirname, parsedPath.basename + parsedPath.extname);
+                // file.path = Path.join(file.base, path);
+
+                if( appFile.sourceMap ) {
+                    appFile.sourceMap.file = appFile.relative;
+                }
 
                 callback( null, appFile );
 
