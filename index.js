@@ -1,57 +1,45 @@
-const map = require('map-stream');
-const fs = require('fs');
-const gutil = require('gulp-util');
+const map = require( 'map-stream' ),
+    fs = require( 'fs' ),
+    gutil = require( 'gulp-util' );
 
 const PLUGIN_NAME = 'gulp-file-override';
 
-function fileOverride(original, app) {
+function fileOverride( defaultPath, modifiedPath ) {
 
-    original = original.replace(/\*/g, '(.*)');
-
-    var replaceRex = new RegExp(original, 'g');
+    var replaceRex = new RegExp( defaultPath.replace( /\*/g, '(.*)' ), 'g' );
 
     return map(
-        (file, cb) => {
+        ( originalFile, callback ) => {
 
-            var appFile = {
-                path: file.path.replace(replaceRex, app),
-                cwd: file.cwd.replace(replaceRex, app),
-                base: file.base.replace(replaceRex, app)
+            var appFileLoc = {
+                path: originalFile.path.replace( replaceRex, modifiedPath ),
+                cwd: originalFile.cwd.replace( replaceRex, modifiedPath ),
+                base: originalFile.base.replace( replaceRex, modifiedPath )
             };
-            console.log('-----------------------------------------------');
 
-            console.log('file.cwd:     ' + file.cwd);
-            console.log('file.base:    ' + file.base);
-            console.log('file.path:    ' + file.path);
-            console.log('original:     ' + original);
-            console.log('mod:          ' + app);
-            console.log('appFile.cwd:  ' + appFile.cwd);
-            console.log('appFile.base: ' + appFile.base);
-            console.log('appfile.path: ' + appFile.path);
+            if( fs.existsSync( appFileLoc.path ) ) {
 
-            if (fs.existsSync(appFile.path)) {
+                //console.log( 'Override file found' );
 
-                console.log('App file found');
+                var appFile = new gutil.File(
+                    {
+                        base: appFileLoc.base,
+                        cwd: appFileLoc.cwd,
+                        path: appFileLoc.path,
+                        contents: new Buffer( fs.readFileSync( appFileLoc.path ) )
+                    }
+                );
 
-                console.log(file);
-                file = new gutil.File({
-                    base: appFile.base,
-                    cwd: appFile.cwd,
-                    path: appFile.path,
-                    contents: new Buffer(fs.readFileSync(appFile.path))
-                });
-
-                console.log(file);
-
-                cb(null, file);
+                callback( null, appFile );
 
             } else {
 
-                cb(null, file);
+                callback( null, originalFile );
 
             }
 
-        });
+        }
+    );
 }
 
 module.exports = fileOverride;
