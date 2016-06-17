@@ -1,0 +1,33 @@
+{
+  "name": "gulp-file-override",
+  "version": "1.0.0",
+  "description": "Override files in the stream with app-specific versions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahosgood/gulp-file-override.git"
+  },
+  "keywords": [
+    "gulp",
+    "file",
+    "override",
+    "overwrite",
+    "app",
+    "stream",
+    "files"
+  ],
+  "author": "Andrew Hosgood",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ahosgood/gulp-file-override/issues"
+  },
+  "homepage": "https://github.com/ahosgood/gulp-file-override#readme",
+  "dependencies": {
+    "fs": "0.0.2",
+    "gulp-util": "^3.0.7",
+    "map-stream": "0.0.6"
+  }
+}
