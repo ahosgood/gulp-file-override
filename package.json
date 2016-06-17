@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/ahosgood/gulp-file-override/issues"
   },
-  "homepage": "https://github.com/ahosgood/gulp-file-override#readme",
+  "homepage": "https://github.com/ahosgood/gulp-file-override",
   "dependencies": {
     "fs": "0.0.2",
     "gulp-util": "^3.0.7",
