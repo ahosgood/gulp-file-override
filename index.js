@@ -5,50 +5,38 @@ const map = require( 'map-stream' ),
 const PLUGIN_NAME = 'gulp-file-override';
 
 function fileOverride( defaultPath, modifiedPath ) {
+    let find = defaultPath.lastIndexOf( '*' ) > -1 ? new RegExp( defaultPath.replace( /\*/g, '(.*)' ), 'g' ) : defaultPath;
 
-    var replaceRex = new RegExp( defaultPath.replace( /\*/g, '(.*)' ), 'g' );
-
-    return map(
-        ( originalFile, callback ) => {
-
-            var appFileLoc = {
-                path: originalFile.path.replace( replaceRex, modifiedPath ),
-                cwd: originalFile.cwd.replace( replaceRex, modifiedPath ),
-                base: originalFile.base.replace( replaceRex, modifiedPath )
+    return map( ( originalFile, callback ) => {
+            let appFileLoc = {
+                path: originalFile.path.replace( find, modifiedPath ),
+                cwd: originalFile.cwd.replace( find, modifiedPath ),
+                base: originalFile.base.replace( find, modifiedPath )
             };
 
-            if( fs.existsSync( appFileLoc.path ) ) {
+        if( appFileLoc.path !== originalFile.path &&
+                fs.existsSync( appFileLoc.path ) &&
+                fs.lstatSync( appFileLoc.path ).isFile() ) {
+            console.log( 'Override file found: "' + originalFile.path + '" --> "' + appFileLoc.path + '"' );
 
-                //console.log( 'Override file found' );
-
-                var appFile = new gutil.File(
-                    {
-                        base: appFileLoc.base,
-                        cwd: originalFile.cwd,
-                        path: appFileLoc.path,
-                        contents: new Buffer( fs.readFileSync( appFileLoc.path ) )
-                    }
-                );
-
-                // var file = appFile.clone({contents: false});
-                // var parsedPath = parsePath(file.relative);
-                // path = Path.join(parsedPath.dirname, parsedPath.basename + parsedPath.extname);
-                // file.path = Path.join(file.base, path);
-
-                if( appFile.sourceMap ) {
-                    appFile.sourceMap.file = appFile.relative;
+            let appFile = new gutil.File(
+                {
+                    base: appFileLoc.base,
+                    cwd: originalFile.cwd,
+                    path: appFileLoc.path,
+                    contents: new Buffer( fs.readFileSync( appFileLoc.path ) )
                 }
+            );
 
-                callback( null, appFile );
-
-            } else {
-
-                callback( null, originalFile );
-
+            if( appFile.sourceMap ) {
+                appFile.sourceMap.file = appFile.relative;
             }
 
+            callback( null, appFile );
+        } else {
+            callback( null, originalFile );
         }
-    );
+    } );
 }
 
 module.exports = fileOverride;

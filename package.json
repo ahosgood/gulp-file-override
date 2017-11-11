@@ -1,6 +1,6 @@
 {
   "name": "gulp-file-override",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Override files in the stream with app-specific versions",
   "main": "index.js",
   "scripts": {
