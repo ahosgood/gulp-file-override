@@ -20,7 +20,7 @@
     "files"
   ],
   "author": "Andrew Hosgood",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ahosgood/gulp-file-override/issues"
   },
